@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simon Says Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        margin: 0;
+      }
+      .container {
+        text-align: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+      }
+      button {
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      button:focus {
+        outline: none;
+      }
+      .start-btn {
+        background-color: #28a745;
+        color: #fff;
+      }
+      .start-btn:hover {
+        background-color: #218838;
+      }
+      .color-btn {
+        width: 100px;
+        height: 100px;
+        font-size: 20px;
+        color: #fff;
+      }
+      .color-btn.red {
+        background-color: #dc3545;
+      }
+      .color-btn.red:hover {
+        background-color: #c82333;
+      }
+      .color-btn.green {
+        background-color: #28a745;
+      }
+      .color-btn.green:hover {
+        background-color: #218838;
+      }
+      .color-btn.yellow {
+        background-color: #ffc107;
+        color: #333;
+      }
+      .color-btn.yellow:hover {
+        background-color: #e0a800;
+      }
+      .color-btn.blue {
+        background-color: #007bff;
+      }
+      .color-btn.blue:hover {
+        background-color: #0069d9;
+      }
+      #buttons {
+        display: none;
+        margin-top: 20px;
+      }
+      #gameOver {
+        display: none;
+        font-size: 24px;
+        color: red;
+        margin-top: 20px;
+      }
+    </style>
+    <script>
+      let socket;
+
+      function startGame() {
+        socket.send("start");
+        document.querySelector(".start-btn").style.display = "none";
+      }
+
+      function sendResponse(color) {
+        socket.send("response:" + color);
+      }
+
+      function setupWebSocket() {
+        socket = new WebSocket(`ws://${window.location.hostname}/ws`);
+        socket.onmessage = function (event) {
+          let msg = event.data;
+          if (msg.startsWith("alert")) {
+            eval(msg);
+          } else if (msg === "showButtons") {
+            document.getElementById("buttons").style.display = "block";
+          } else {
+            console.log(msg);
+          }
+        };
+      }
+
+      window.onload = function () {
+        setupWebSocket();
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Simon Says Game</h1>
+      <button class="start-btn" onclick="startGame()">Start Game</button>
+      <div id="buttons">
+        <button class="color-btn red" onclick="sendResponse('red')">Red</button>
+        <button class="color-btn green" onclick="sendResponse('green')">
+          Green
+        </button>
+        <button class="color-btn yellow" onclick="sendResponse('yellow')">
+          Yellow
+        </button>
+        <button class="color-btn blue" onclick="sendResponse('blue')">
+          Blue
+        </button>
+      </div>
+    </div>
+  </body>
+</html>
