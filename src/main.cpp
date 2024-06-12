@@ -14,10 +14,10 @@ AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
 // Définir les broches GPIO pour les LED
-const int yellowLED = 14;
-const int blueLED = 27;
-const int redLED = 16;
-const int greenLED = 17;
+const int yellowLED = 19;
+const int blueLED = 18;
+const int redLED = 27;
+const int greenLED = 14;
 
 // Variables pour le jeu Simon Says
 std::vector<int> sequence; // La séquence de LEDs à suivre
